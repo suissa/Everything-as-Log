@@ -36,5 +36,5 @@ try {
   example.failing();
 } catch {}
 
-example.successfulAsync().then(() => undefined);
-example.failingAsync().catch(() => undefined);
+void example.successfulAsync();
+void example.failingAsync().catch(() => undefined);
