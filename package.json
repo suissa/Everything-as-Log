@@ -17,36 +17,39 @@
     }
   ],
   "engines": {
-    "node": ">=6"
+    "node": ">=18"
   },
   "files": [
     "src",
+    "dist",
     "types",
     "index.js"
   ],
   "types": "./types/signale.d.ts",
   "keywords": [
     "log",
-    "cli",
     "logger",
     "logging",
-    "hackable",
-    "colorful",
+    "decorator",
+    "eal",
     "console"
   ],
   "scripts": {
+    "build": "tsc",
     "lint": "xo",
-    "test:ts": "tsc --noEmit -p test",
-    "test": "npm run lint && npm run test:ts"
+    "test:ts": "tsc --noEmit -p tsconfig.json",
+    "test": "npm run lint && npm run test:ts",
+    "prepare": "npm run build"
   },
   "dependencies": {
     "chalk": "^2.3.2",
     "figures": "^2.0.0",
-    "pkg-conf": "^2.1.0"
+    "pkg-conf": "^2.1.0",
+    "yaml": "^2.8.1"
   },
   "devDependencies": {
-    "@types/node": "^11.11.3",
-    "typescript": "^3.3.3333",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.0",
     "xo": "*"
   },
   "options": {
