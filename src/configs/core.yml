@@ -1,6 +1,6 @@
 # Everything-as-Log canonical behavior configuration.
 # Application code only declares @EaL("behavior") or @EaL.
-# It never selects a logger, message, stream, color, or execution policy.
+# Every log label is an emoji and can be changed here.
 
 config:
   displayScope: true
@@ -19,152 +19,161 @@ behaviors:
   error:
     execution: error
     logger: error
-    badge: "✖"
+    badge: "🚨"
     color: red
-    label: error
+    label: "🚨"
     logLevel: error
     message: "{error.name}: {error.message}"
 
   fatal:
     execution: error
     logger: fatal
-    badge: "✖"
+    badge: "🚨"
     color: red
-    label: fatal
+    label: "🚨"
     logLevel: error
     message: "{error.name}: {error.message}"
 
   fav:
     execution: always
     logger: fav
-    badge: "❤"
+    badge: "❤️"
     color: magenta
-    label: favorite
+    label: "❤️"
     logLevel: info
     message: "{name}"
 
   info:
     execution: always
     logger: info
-    badge: "ℹ"
+    badge: "ℹ️"
     color: blue
-    label: info
+    label: "ℹ️"
     logLevel: info
     message: "{name}"
 
   star:
     execution: always
     logger: star
-    badge: "★"
+    badge: "⭐"
     color: yellow
-    label: star
+    label: "⭐"
     logLevel: info
     message: "{name}"
 
   success:
     execution: success
     logger: success
-    badge: "✔"
+    badge: "🎉"
     color: green
-    label: success
+    label: "🎉"
     logLevel: info
     message: "{name} completed successfully"
 
   wait:
     execution: always
     logger: wait
-    badge: "…"
+    badge: "⏳"
     color: blue
-    label: waiting
+    label: "⏳"
     logLevel: info
     message: "{name} waiting"
 
-  warn:
+  warning:
     execution: error
     logger: warn
-    badge: "⚠"
+    badge: "⚠️"
     color: yellow
-    label: warning
+    label: "⚠️"
     logLevel: warn
     message: "{error.name}: {error.message}"
 
   complete:
     execution: success
     logger: complete
-    badge: "☑"
+    badge: "🤝"
     color: cyan
-    label: complete
+    label: "🤝"
     logLevel: info
     message: "{name} completed"
 
   pending:
     execution: always
     logger: pending
-    badge: "☐"
+    badge: "⏳"
     color: magenta
-    label: pending
+    label: "⏳"
     logLevel: info
     message: "{name} pending"
 
   note:
     execution: always
     logger: note
-    badge: "•"
+    badge: "📝"
     color: blue
-    label: note
+    label: "📝"
     logLevel: info
     message: "{name}"
 
-  start:
-    execution: start
+  timer_start:
+    execution: always
     logger: start
-    badge: "▶"
+    badge: "👋"
     color: green
-    label: start
+    label: "👋"
     logLevel: info
     message: "{name} started"
 
   pause:
     execution: always
     logger: pause
-    badge: "■"
+    badge: "⏸️"
     color: yellow
-    label: pause
+    label: "⏸️"
     logLevel: info
     message: "{name} paused"
 
   debug:
     execution: always
     logger: debug
-    badge: "⬤"
+    badge: "⌛"
     color: red
-    label: debug
+    label: "⌛"
     logLevel: debug
     message: "{name}"
 
   await:
     execution: always
     logger: await
-    badge: "…"
+    badge: "⏳"
     color: blue
-    label: awaiting
+    label: "⏳"
     logLevel: info
     message: "{name} awaiting"
 
-  watch:
+  watching:
     execution: always
     logger: watch
-    badge: "…"
+    badge: "🔎"
     color: yellow
-    label: watching
+    label: "🔎"
     logLevel: info
     message: "{name}"
+
+  timer_end:
+    execution: always
+    logger: complete
+    badge: "🤝"
+    color: cyan
+    label: "🤝"
+    logLevel: info
+    message: "{name} finished"
 
   log:
     execution: always
     logger: log
-    badge: ""
+    badge: "📋"
     color: ""
-    label: ""
+    label: "📋"
     logLevel: info
     message: "{name}"
