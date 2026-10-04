@@ -1,0 +1,170 @@
+# Everything-as-Log canonical behavior configuration.
+# Application code only declares @EaL("behavior") or @EaL.
+# It never selects a logger, message, stream, color, or execution policy.
+
+config:
+  displayScope: true
+  displayBadge: true
+  displayDate: false
+  displayFilename: false
+  displayLabel: true
+  displayTimestamp: false
+  underlineLabel: true
+  underlineMessage: false
+  underlinePrefix: false
+  underlineSuffix: false
+  uppercaseLabel: false
+
+behaviors:
+  error:
+    execution: error
+    logger: error
+    badge: "✖"
+    color: red
+    label: error
+    logLevel: error
+    message: "{error.name}: {error.message}"
+
+  fatal:
+    execution: error
+    logger: fatal
+    badge: "✖"
+    color: red
+    label: fatal
+    logLevel: error
+    message: "{error.name}: {error.message}"
+
+  fav:
+    execution: always
+    logger: fav
+    badge: "❤"
+    color: magenta
+    label: favorite
+    logLevel: info
+    message: "{name}"
+
+  info:
+    execution: always
+    logger: info
+    badge: "ℹ"
+    color: blue
+    label: info
+    logLevel: info
+    message: "{name}"
+
+  star:
+    execution: always
+    logger: star
+    badge: "★"
+    color: yellow
+    label: star
+    logLevel: info
+    message: "{name}"
+
+  success:
+    execution: success
+    logger: success
+    badge: "✔"
+    color: green
+    label: success
+    logLevel: info
+    message: "{name} completed successfully"
+
+  wait:
+    execution: always
+    logger: wait
+    badge: "…"
+    color: blue
+    label: waiting
+    logLevel: info
+    message: "{name} waiting"
+
+  warn:
+    execution: error
+    logger: warn
+    badge: "⚠"
+    color: yellow
+    label: warning
+    logLevel: warn
+    message: "{error.name}: {error.message}"
+
+  complete:
+    execution: success
+    logger: complete
+    badge: "☑"
+    color: cyan
+    label: complete
+    logLevel: info
+    message: "{name} completed"
+
+  pending:
+    execution: always
+    logger: pending
+    badge: "☐"
+    color: magenta
+    label: pending
+    logLevel: info
+    message: "{name} pending"
+
+  note:
+    execution: always
+    logger: note
+    badge: "•"
+    color: blue
+    label: note
+    logLevel: info
+    message: "{name}"
+
+  start:
+    execution: start
+    logger: start
+    badge: "▶"
+    color: green
+    label: start
+    logLevel: info
+    message: "{name} started"
+
+  pause:
+    execution: always
+    logger: pause
+    badge: "■"
+    color: yellow
+    label: pause
+    logLevel: info
+    message: "{name} paused"
+
+  debug:
+    execution: always
+    logger: debug
+    badge: "⬤"
+    color: red
+    label: debug
+    logLevel: debug
+    message: "{name}"
+
+  await:
+    execution: always
+    logger: await
+    badge: "…"
+    color: blue
+    label: awaiting
+    logLevel: info
+    message: "{name} awaiting"
+
+  watch:
+    execution: always
+    logger: watch
+    badge: "…"
+    color: yellow
+    label: watching
+    logLevel: info
+    message: "{name}"
+
+  log:
+    execution: always
+    logger: log
+    badge: ""
+    color: ""
+    label: ""
+    logLevel: info
+    message: "{name}"
