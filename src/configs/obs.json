@@ -1,0 +1,93 @@
+{
+  "success": {
+    "trace": {
+      "label": "🛣️",
+      "name": "success.trace",
+      "value": "{name}"
+    },
+    "metric": {
+      "label": "📈",
+      "name": "duration",
+      "value": "{durationMs}",
+      "unit": "ms"
+    }
+  },
+  "error": {
+    "trace": {
+      "label": "➡️",
+      "name": "error.trace",
+      "value": "{error.name}: {error.message}"
+    },
+    "metric": {
+      "label": "📈",
+      "name": "duration",
+      "value": "{durationMs}",
+      "unit": "ms"
+    }
+  },
+  "warning": {
+    "trace": {
+      "label": "🛣️",
+      "name": "warning.trace",
+      "value": "{error.name}: {error.message}"
+    },
+    "metric": {
+      "label": "📈",
+      "name": "duration",
+      "value": "{durationMs}",
+      "unit": "ms"
+    }
+  },
+  "debug": {
+    "trace": {
+      "label": "➡️",
+      "name": "debug.trace",
+      "value": "{name}"
+    },
+    "metric": {
+      "label": "📈",
+      "name": "duration",
+      "value": "{durationMs}",
+      "unit": "ms"
+    }
+  },
+  "watching": {
+    "trace": {
+      "label": "🛣️",
+      "name": "watching.trace",
+      "value": "{name}"
+    },
+    "metric": {
+      "label": "📈",
+      "name": "duration",
+      "value": "{durationMs}",
+      "unit": "ms"
+    }
+  },
+  "timer_start": {
+    "trace": {
+      "label": "👋",
+      "name": "timer.start",
+      "value": "{name}"
+    },
+    "metric": {
+      "label": "📈",
+      "name": "duration",
+      "value": "{durationMs}",
+      "unit": "ms"
+    }
+  },
+  "timer_end": {
+    "trace": {
+      "label": "🤝",
+      "name": "timer.end",
+      "value": "{name}"
+    },
+    "metric": {
+      "label": "📈",
+      "name": "duration",
+      "value": "{durationMs}",
+      "unit": "ms"
+    }
+  }
+}
