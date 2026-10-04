@@ -1,11 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import {createRequire} from 'node:module';
 import Signale = require('./signale');
 
-type Execution = 'always' | 'success' | 'error' | 'never';
+export type Execution = 'always' | 'success' | 'error' | 'never';
 
-interface Behavior {
+export interface Behavior {
   execution: Execution;
   logger: string;
   badge?: string;
@@ -15,7 +14,7 @@ interface Behavior {
   message: string;
 }
 
-interface CoreConfiguration {
+export interface CoreConfiguration {
   config?: Record<string, unknown>;
   behaviors: Record<string, Behavior>;
 }
@@ -27,16 +26,18 @@ interface InvocationContext {
   error?: unknown;
 }
 
-const require = createRequire(import.meta.url);
-const YAML = require('yaml') as {parse(input: string): CoreConfiguration};
+interface YamlParser {
+  parse(source: string): CoreConfiguration;
+}
 
+// Loaded lazily so the application only depends on the decorator boundary.
+const YAML = require('yaml') as YamlParser;
 const CORE_PATH = path.join(__dirname, 'configs', 'core.yml');
 
 function loadCoreConfiguration(): CoreConfiguration {
-  const source = fs.readFileSync(CORE_PATH, 'utf8');
-  const configuration = YAML.parse(source);
+  const configuration = YAML.parse(fs.readFileSync(CORE_PATH, 'utf8'));
 
-  if (!configuration || typeof configuration !== 'object' || !configuration.behaviors) {
+  if (!configuration || !configuration.behaviors) {
     throw new Error('Everything-as-Log core configuration must define behaviors.');
   }
 
@@ -59,21 +60,30 @@ function resolveBehavior(name: string): Behavior {
 function render(template: string, context: InvocationContext): string {
   return template.replace(/\{([^}]+)\}/g, (_, key: string) => {
     const parts = key.split('.');
-    let value: unknown =
-      parts[0] === 'error'
-        ? context.error
-        : parts[0] === 'result'
-          ? context.result
-          : parts[0] === 'args'
-            ? context.args
-            : parts[0] === 'name'
-              ? context.name
-              : undefined;
+    let value: unknown;
+
+    switch (parts[0]) {
+      case 'name':
+        value = context.name;
+        break;
+      case 'args':
+        value = context.args;
+        break;
+      case 'result':
+        value = context.result;
+        break;
+      case 'error':
+        value = context.error;
+        break;
+      default:
+        return '';
+    }
 
     for (const part of parts.slice(1)) {
       if (value === null || value === undefined) {
         return '';
       }
+
       value = (value as Record<string, unknown>)[part];
     }
 
@@ -86,24 +96,27 @@ function emit(behavior: Behavior, context: InvocationContext): void {
     return;
   }
 
-  const message = render(behavior.message, context);
   const method = (logger as unknown as Record<string, (...args: unknown[]) => void>)[behavior.logger];
 
   if (typeof method !== 'function') {
     throw new Error(`Everything-as-Log logger "${behavior.logger}" is not available.`);
   }
 
-  method.call(logger, message);
+  // Logging must never change the business function's behavior.
+  try {
+    method.call(logger, render(behavior.message, context));
+  } catch {
+    // A logger failure is intentionally isolated from the decorated function.
+  }
 }
 
-function createDecorator(behaviorName: string | undefined) {
-  return function decorate(
+function createDecorator(behaviorName?: string) {
+  return (
     originalMethod: (...args: any[]) => any,
     context: ClassMethodDecoratorContext
-  ) {
-    const configuredName = behaviorName ?? String(context.name);
-    const behavior = resolveBehavior(configuredName);
+  ) => {
     const functionName = String(context.name);
+    const behavior = resolveBehavior(behaviorName ?? functionName);
 
     return function wrapped(this: unknown, ...args: any[]) {
       let result: unknown;
@@ -114,6 +127,9 @@ function createDecorator(behaviorName: string | undefined) {
         if (behavior.execution === 'error' || behavior.execution === 'always') {
           emit(behavior, {name: functionName, args, error});
         }
+
+        // Preserve normal function semantics: the decorator observes the error,
+        // but does not replace or swallow it.
         throw error;
       }
 
@@ -123,12 +139,14 @@ function createDecorator(behaviorName: string | undefined) {
             if (behavior.execution === 'success' || behavior.execution === 'always') {
               emit(behavior, {name: functionName, args, result: value});
             }
+
             return value;
           },
           error => {
             if (behavior.execution === 'error' || behavior.execution === 'always') {
               emit(behavior, {name: functionName, args, error});
             }
+
             throw error;
           }
         );
@@ -144,16 +162,22 @@ function createDecorator(behaviorName: string | undefined) {
 }
 
 export function EaL(
-  behaviorOrTarget?: string | ((...args: any[]) => any)
-): ((...args: any[]) => any) | Function {
-  if (typeof behaviorOrTarget === 'function') {
-    return createDecorator(undefined)(behaviorOrTarget, {
-      name: behaviorOrTarget.name,
-      kind: 'method'
-    } as ClassMethodDecoratorContext);
+  target: (...args: any[]) => any,
+  context: ClassMethodDecoratorContext
+): (...args: any[]) => any;
+export function EaL(behaviorName?: string): (
+  target: (...args: any[]) => any,
+  context: ClassMethodDecoratorContext
+) => (...args: any[]) => any;
+export function EaL(
+  behaviorOrTarget?: string | ((...args: any[]) => any),
+  context?: ClassMethodDecoratorContext
+): any {
+  if (typeof behaviorOrTarget === 'function' && context) {
+    return createDecorator()(behaviorOrTarget, context);
   }
 
-  return createDecorator(behaviorOrTarget);
+  return createDecorator(behaviorOrTarget as string | undefined);
 }
 
-export {core as EaLConfiguration};
+export const EaLConfiguration = core;
